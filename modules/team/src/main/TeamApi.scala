@@ -62,7 +62,8 @@ final class TeamApi(
         location = e.location,
         description = e.description,
         open = e.isOpen,
-        chat = e.chat
+        chat = e.chat,
+        privateForum = e.privateForum.some
       ) pipe { team =>
         teamRepo.coll.update.one($id(team.id), team).void >>
           !team.leaders(me.id) ?? {
@@ -244,6 +245,9 @@ final class TeamApi(
 
   def leads(teamId: Team.ID, userId: User.ID): Fu[Boolean] =
     teamRepo.leads(teamId, userId)
+
+  def canAccessForum(teamId: Team.ID, userId: User.ID): Fu[Boolean] =
+    !teamRepo.privateForum(teamId) >>| belongsTo(teamId, userId)
 
   def filterExistingIds(ids: Set[String]): Fu[Set[Team.ID]] =
     teamRepo.coll.distinctEasy[Team.ID, Set]("_id", $doc("_id" $in ids), ReadPreference.secondaryPreferred)

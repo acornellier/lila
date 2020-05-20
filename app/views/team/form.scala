@@ -74,6 +74,11 @@ object form {
                 )
               )
             },
+            form3.checkbox(
+              form("privateForum"),
+              frag("Private forum"),
+              help = frag("Restrict forum access to members only").some,
+            ),
             form3.actions(
               a(href := routes.Team.show(t.id), style := "margin-left:20px")(trans.cancel()),
               form3.submit(trans.apply())

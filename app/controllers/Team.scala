@@ -55,6 +55,7 @@ final class Team(
       info    <- env.teamInfo(team, ctx.me)
       members <- paginator.teamMembers(team, page)
       hasChat = canHaveChat(team, info)
+      hasForum = canHaveForum(team, info)
       chat <-
         hasChat ?? env.chat.api.userChat.cached
           .findMine(lila.chat.Chat.Id(team.id), ctx.me)
@@ -63,7 +64,7 @@ final class Team(
         info.userIds ::: chat.??(_.chat.userIds)
       }
       version <- hasChat ?? env.team.version(team.id).dmap(some)
-    } yield html.team.show(team, members, info, chat, version)
+    } yield html.team.show(team, members, info, chat, version, hasForum)
 
   private def canHaveChat(team: TeamModel, info: lila.app.mashup.TeamInfo)(implicit ctx: Context): Boolean =
     !team.isChatFor(_.NONE) && ctx.noKid && {
@@ -71,6 +72,9 @@ final class Team(
       (team.isChatFor(_.MEMBERS) && info.mine) ||
       isGranted(_.ChatTimeout)
     }
+
+  private def canHaveForum(team: TeamModel, info: lila.app.mashup.TeamInfo)(implicit ctx: Context): Boolean =
+    ctx.noKid && (!team.isForumPrivate || info.mine)
 
   def legacyUsers(teamId: String) =
     Action {

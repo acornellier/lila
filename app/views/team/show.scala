@@ -21,7 +21,8 @@ object show {
       members: Paginator[lila.common.LightUser],
       info: TeamInfo,
       chatOption: Option[lila.chat.UserChat.Mine],
-      socketVersion: Option[lila.socket.Socket.SocketVersion]
+      socketVersion: Option[lila.socket.Socket.SocketVersion],
+      hasForum: Boolean
   )(implicit
       ctx: Context
   ) =
@@ -185,7 +186,7 @@ object show {
                   )
                 )
               ),
-              ctx.noKid option
+              hasForum option
                 st.section(cls := "team-show__forum")(
                   h2(a(href := teamForumUrl(t.id))(trans.forum())),
                   info.forumPosts.take(10).map { post =>

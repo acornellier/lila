@@ -21,6 +21,7 @@ final private[team] class DataForm(
     val gameId      = "gameId"      -> text
     val move        = "move"        -> text
     val chat        = "chat"        -> lila.common.Form.numberIn(Team.ChatFor.all)
+    val privateForum = "privateForum" -> boolean
   }
 
   val create = Form(
@@ -42,13 +43,15 @@ final private[team] class DataForm(
         Fields.location,
         Fields.description,
         Fields.open,
-        Fields.chat
+        Fields.chat,
+        Fields.privateForum
       )(TeamEdit.apply)(TeamEdit.unapply)
     ) fill TeamEdit(
       location = team.location,
       description = team.description,
       open = if (team.open) 1 else 0,
-      chat = team.chat
+      chat = team.chat,
+      privateForum = team.isForumPrivate
     )
 
   val request = Form(
@@ -116,7 +119,8 @@ private[team] case class TeamEdit(
     location: Option[String],
     description: String,
     open: Int,
-    chat: Team.ChatFor
+    chat: Team.ChatFor,
+    privateForum: Boolean
 ) {
 
   def isOpen = open == 1

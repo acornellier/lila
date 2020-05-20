@@ -17,7 +17,8 @@ case class Team(
     createdAt: DateTime,
     createdBy: User.ID,
     leaders: Set[User.ID],
-    chat: Team.ChatFor
+    chat: Team.ChatFor,
+    privateForum: Option[Boolean]
 ) {
 
   def id = _id
@@ -30,6 +31,8 @@ case class Team(
 
   def isChatFor(f: Team.ChatFor.type => Team.ChatFor) =
     chat == f(Team.ChatFor)
+
+  def isForumPrivate = privateForum.getOrElse(false)
 }
 
 object Team {
@@ -87,7 +90,8 @@ object Team {
       createdAt = DateTime.now,
       createdBy = createdBy.id,
       leaders = Set(createdBy.id),
-      chat = ChatFor.MEMBERS
+      chat = ChatFor.MEMBERS,
+      privateForum = false.some
     )
 
   def nameToId(name: String) =

@@ -47,6 +47,9 @@ final class TeamRepo(val coll: Coll)(implicit ec: scala.concurrent.ExecutionCont
   def leads(teamId: String, userId: User.ID) =
     coll.exists($id(teamId) ++ $doc("leaders" -> userId))
 
+  def privateForum(teamId: String) =
+    coll.exists($id(teamId) ++ $doc("privateForum" -> true))
+
   def name(id: String): Fu[Option[String]] =
     coll.primitiveOne[String]($id(id), "name")
 

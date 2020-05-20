@@ -16,6 +16,9 @@ trait ForumHelper { self: UserHelper with StringHelper with HasEnv =>
 
     protected def userOwnsTeam(teamId: String, userId: String): Fu[Boolean] =
       env.team.api.leads(teamId, userId)
+
+    protected def canAccesTeamForum(teamId: String, userId: String): Fu[Boolean] =
+      env.team.api.canAccessForum(teamId, userId)
   }
 
   def isGrantedWrite(categSlug: String)(implicit ctx: Context) =

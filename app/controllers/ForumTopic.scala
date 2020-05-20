@@ -14,7 +14,7 @@ final class ForumTopic(env: Env) extends LilaController(env) with ForumControlle
 
   def form(categSlug: String) =
     Open { implicit ctx =>
-      NotForKids {
+      CategForumAccess(categSlug) {
         OptionFuOk(env.forum.categRepo bySlug categSlug) { categ =>
           forms.anyCaptcha map { html.forum.topic.form(categ, forms.topic, _) }
         }
@@ -44,17 +44,17 @@ final class ForumTopic(env: Env) extends LilaController(env) with ForumControlle
 
   def show(categSlug: String, slug: String, page: Int) =
     Open { implicit ctx =>
-      NotForKids {
+      CategForumAccess(categSlug) {
         OptionFuOk(topicApi.show(categSlug, slug, page, ctx.me)) {
           case (categ, topic, posts) =>
             for {
-              unsub    <- ctx.userId ?? env.timeline.status(s"forum:${topic.id}")
+              unsub <- ctx.userId ?? env.timeline.status(s"forum:${topic.id}")
               canWrite <- isGrantedWrite(categSlug)
               form <-
                 (!posts.hasNextPage && canWrite && topic.open && !topic.isOld) ?? forms.postWithCaptcha
                   .map(_.some)
               canModCateg <- isGrantedMod(categ.slug)
-              _           <- env.user.lightUserApi preloadMany posts.currentPageResults.flatMap(_.userId)
+              _ <- env.user.lightUserApi preloadMany posts.currentPageResults.flatMap(_.userId)
             } yield html.forum.topic.show(categ, topic, posts, form, unsub, canModCateg = canModCateg)
         }
       }

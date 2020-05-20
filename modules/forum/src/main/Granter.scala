@@ -9,6 +9,7 @@ trait Granter {
 
   protected def userBelongsToTeam(teamId: String, userId: String): Fu[Boolean]
   protected def userOwnsTeam(teamId: String, userId: String): Fu[Boolean]
+  protected def canAccesTeamForum(teamId: String, userId: String): Fu[Boolean]
 
   def isGrantedWrite(categSlug: String)(implicit ctx: UserContext): Fu[Boolean] =
     ctx.me.filter(isOldEnoughToForum) ?? { me =>
@@ -30,5 +31,14 @@ trait Granter {
           userOwnsTeam(teamId, me.id)
         }
       case _ => fuFalse
+    }
+
+  def canAccessForum(categSlug: String)(implicit ctx: UserContext): Fu[Boolean] =
+    categSlug match {
+      case TeamSlugPattern(teamId) =>
+        ctx.me ?? { me =>
+          canAccesTeamForum(teamId, me.id)
+        }
+      case _ => fuTrue
     }
 }
