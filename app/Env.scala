@@ -46,6 +46,7 @@ final class Env(
     val pref: lila.pref.Env,
     val chat: lila.chat.Env,
     val puzzle: lila.puzzle.Env,
+    val rush: lila.rush.Env,
     val coordinate: lila.coordinate.Env,
     val tv: lila.tv.Env,
     val blog: lila.blog.Env,
@@ -214,6 +215,7 @@ final class EnvBoot(
   lazy val pref: lila.pref.Env               = wire[lila.pref.Env]
   lazy val chat: lila.chat.Env               = wire[lila.chat.Env]
   lazy val puzzle: lila.puzzle.Env           = wire[lila.puzzle.Env]
+  lazy val rush: lila.rush.Env               = wire[lila.rush.Env]
   lazy val coordinate: lila.coordinate.Env   = wire[lila.coordinate.Env]
   lazy val tv: lila.tv.Env                   = wire[lila.tv.Env]
   lazy val blog: lila.blog.Env               = wire[lila.blog.Env]

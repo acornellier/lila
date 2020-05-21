@@ -97,6 +97,9 @@ POST  /training/:id/round2             controllers.Puzzle.round2(id: Int)
 # mobile app BC
 POST  /training/:id/attempt            controllers.Puzzle.round(id: Int)
 
+# Rush
+GET   /rush                            controllers.Rush.home
+
 # User Analysis
 GET   /analysis/help                   controllers.UserAnalysis.help
 GET   /analysis/*something             controllers.UserAnalysis.parseArg(something: String)

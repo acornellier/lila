@@ -40,6 +40,7 @@ object topnav {
           ctx.noBot option frag(
             a(href := routes.Learn.index)(trans.chessBasics()),
             a(href := routes.Puzzle.home)(trans.puzzles()),
+            a(href := routes.Rush.home)("Rush"),
             a(href := routes.Practice.index)(trans.practice()),
             a(href := routes.Coordinate.home)(trans.coordinates.coordinates())
           ),

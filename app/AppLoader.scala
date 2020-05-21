@@ -109,6 +109,7 @@ final class LilaComponents(ctx: ApplicationLoader.Context)
   lazy val relay: Relay                   = wire[Relay]
   lazy val report: Report                 = wire[Report]
   lazy val round: Round                   = wire[Round]
+  lazy val rush: Rush                     = wire[Rush]
   lazy val search: Search                 = wire[Search]
   lazy val setup: Setup                   = wire[Setup]
   lazy val simul: Simul                   = wire[Simul]

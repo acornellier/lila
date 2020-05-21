@@ -48,7 +48,7 @@ lazy val modules = Seq(
   gameSearch, timeline, forum, forumSearch, team, teamSearch,
   analyse, mod, round, pool, lobby, setup,
   importer, tournament, simul, relation, report, pref,
-  evaluation, chat, puzzle, tv, coordinate, blog,
+  evaluation, chat, puzzle, rush, tv, coordinate, blog,
   history, video, shutup, push,
   playban, insight, perfStat, slack, quote, challenge,
   study, studySearch, fishnet, explorer, learn, plan,
@@ -84,6 +84,11 @@ lazy val i18n = module("i18n",
 lazy val puzzle = module("puzzle",
   Seq(common, memo, hub, history, db, user, rating, pref, tree, game),
   reactivemongo.bundle
+)
+
+lazy val rush = module("rush",
+  Seq(common, db),
+  Seq()
 )
 
 lazy val quote = module("quote",
