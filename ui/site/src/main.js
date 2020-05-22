@@ -217,6 +217,7 @@
     else if (lichess.practice) startPractice(lichess.practice);
     else if (lichess.relay) startRelay(lichess.relay);
     else if (lichess.puzzle) startPuzzle(lichess.puzzle);
+    else if (lichess.rush) startRush(lichess.rush);
     else if (lichess.tournament) startTournament(lichess.tournament);
     else if (lichess.simul) startSimul(lichess.simul);
     else if (lichess.team) startTeam(lichess.team);
@@ -949,6 +950,15 @@
   function startPuzzle(cfg) {
     cfg.element = document.querySelector('main.puzzle');
     LichessPuzzle.default(cfg);
+  }
+
+  ////////////////
+  // rush.js //
+  ////////////////
+
+  function startRush(cfg) {
+    cfg.element = document.querySelector('main.rush');
+    LichessRush.default(cfg);
   }
 
   ////////////////////

@@ -1,0 +1,28 @@
+{
+  "name": "rush",
+  "version": "2.0.0",
+  "private": true,
+  "description": "lichess.org rush",
+  "main": "src/main.js",
+  "keywords": [
+    "chess",
+    "lichess",
+    "rush"
+  ],
+  "author": "Thibault Duplessis",
+  "license": "AGPL-3.0",
+  "devDependencies": {
+    "@build/tsProject": "2.0.0",
+    "@types/jquery": "^2.0",
+    "@types/lichess": "2.0.0"
+  },
+  "dependencies": {
+    "ceval": "2.0.0",
+    "chess": "2.0.0",
+    "chessground": "^7.6",
+    "chessops": "^0.4.0",
+    "common": "2.0.0",
+    "snabbdom": "ornicar/snabbdom#0.7.1-lichess",
+    "tree": "2.0.0"
+  }
+}
