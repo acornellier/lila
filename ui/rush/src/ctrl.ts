@@ -1,5 +1,4 @@
 import { build as treeBuild, ops as treeOps, path as treePath, TreeWrapper } from 'tree';
-import { decomposeUci, sanToRole } from 'chess';
 import keyboard from './keyboard';
 import moveTestBuild from './moveTest';
 import makePromotion from './promotion';
@@ -160,9 +159,7 @@ export default function(opts: PuzzleOpts, redraw: Redraw): Controller {
       vm.lastFeedback = 'win';
     } else {
       vm.lastFeedback = 'good';
-      setTimeout(function() {
-        sendMove(progress.orig, progress.dest, progress.promotion);
-      }, 500);
+      sendMove(progress.orig, progress.dest, progress.promotion);
     }
   }
 
@@ -186,19 +183,6 @@ export default function(opts: PuzzleOpts, redraw: Redraw): Controller {
       redraw();
     });
   };
-
-  function playUci(uci: string): void {
-    const move = decomposeUci(uci);
-    if (!move[2]) sendMove(move[0], move[1]);
-    else sendMove(move[0], move[1], sanToRole[move[2].toUpperCase()]);
-  }
-
-  function gameOver(): false | 'checkmate' | 'draw' {
-    const pos = position();
-    if (pos.isCheckmate()) return 'checkmate';
-    if (pos.isInsufficientMaterial()) return 'draw';
-    return false;
-  }
 
   function jump(path: Tree.Path): void {
     const pathChanged = path !== vm.path,
@@ -269,9 +253,7 @@ export default function(opts: PuzzleOpts, redraw: Redraw): Controller {
     recentHash,
     pref: opts.pref,
     trans: window.lichess.trans(opts.i18n),
-    gameOver,
     userMove,
-    playUci,
     getOrientation() {
       return withGround(g => g.state.orientation)!;
     },

@@ -17,9 +17,7 @@ export interface KeyboardController {
 }
 
 export interface Controller extends KeyboardController {
-  gameOver: (node?: Tree.Node) => 'draw' | 'checkmate' | false;
   ongoing: boolean;
-  playUci(uci: string): void;
   getOrientation(): Color;
   getNode(): Tree.Node;
   trans: Trans;
