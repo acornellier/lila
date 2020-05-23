@@ -16,7 +16,7 @@ function render(ctrl: Controller): VNode {
         win: s[1] >= 0,
         loss: s[1] < 0
       },
-      attrs: { href: '/training/' + s[0] }
+      attrs: {href: '/training/' + s[0]}
     }, s[1] >= 0 ? '+' + s[1] : '−' + (-s[1]));
   }));
 }

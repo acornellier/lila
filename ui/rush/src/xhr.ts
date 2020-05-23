@@ -1,4 +1,4 @@
-import { PuzzleRound, PuzzleVote, PuzzleData } from './interfaces';
+import { PuzzleData, PuzzleRound } from './interfaces';
 
 // do NOT set mobile API headers here
 // they trigger a compat layer
@@ -11,15 +11,7 @@ export function round(puzzleId: number, win: boolean): JQueryPromise<PuzzleRound
     }
   });
 }
-export function vote(puzzleId: number, v: boolean): JQueryPromise<PuzzleVote> {
-  return $.ajax({
-    method: 'POST',
-    url: `/training/${puzzleId}/vote`,
-    data: {
-      vote: v ? 1 : 0
-    }
-  });
-}
+
 export function nextPuzzle(): JQueryPromise<PuzzleData> {
   return $.ajax({
     url: '/training/new'

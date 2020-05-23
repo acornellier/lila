@@ -1,8 +1,8 @@
-import { h } from 'snabbdom'
+import { h } from 'snabbdom';
 import { bind, onInsert } from './util';
 import * as cgUtil from 'chessground/util';
 import { Role } from 'chessground/types';
-import { MaybeVNode, Vm, Redraw, Promotion } from './interfaces';
+import { MaybeVNode, Promotion, Redraw, Vm } from './interfaces';
 
 export default function(vm: Vm, getGround, redraw: Redraw): Promotion {
 
@@ -10,24 +10,24 @@ export default function(vm: Vm, getGround, redraw: Redraw): Promotion {
 
   function start(orig: Key, dest: Key, callback: (orig: Key, key: Key, prom: Role) => void) {
     const g = getGround(),
-    piece = g.state.pieces[dest];
+      piece = g.state.pieces[dest];
     if (piece && piece.role == 'pawn' && (
       (dest[1] == '8' && g.state.turnColor == 'black') ||
-        (dest[1] == '1' && g.state.turnColor == 'white'))) {
+      (dest[1] == '1' && g.state.turnColor == 'white'))) {
       promoting = {
         orig: orig,
         dest: dest,
         callback: callback
       };
       redraw();
-    return true;
+      return true;
     }
     return false;
   }
 
   function promote(g, key: Key, role: Role): void {
-    var pieces = {};
-    var piece = g.state.pieces[key];
+    let pieces = {};
+    let piece = g.state.pieces[key];
     if (piece && piece.role == 'pawn') {
       pieces[key] = {
         color: piece.color,
@@ -62,8 +62,8 @@ export default function(vm: Vm, getGround, redraw: Redraw): Promotion {
 
     return h('div#promotion-choice.' + vertical, {
       hook: onInsert(el => {
-          el.addEventListener('click', cancel);
-          el.oncontextmenu = () => false;
+        el.addEventListener('click', cancel);
+        el.oncontextmenu = () => false;
       })
     }, pieces.map(function(serverRole, i) {
       const top = (color === orientation ? i : 7 - i) * 12.5;

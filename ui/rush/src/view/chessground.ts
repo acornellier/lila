@@ -1,4 +1,4 @@
-import { h } from 'snabbdom'
+import { h } from 'snabbdom';
 import { VNode } from 'snabbdom/vnode';
 import { Chessground } from 'chessground';
 import { Config as CgConfig } from 'chessground/config';

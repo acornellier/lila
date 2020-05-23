@@ -5,7 +5,7 @@ import { Chessground } from 'chessground';
 import { Controller, PuzzleOpts } from './interfaces';
 
 import { init } from 'snabbdom';
-import { VNode } from 'snabbdom/vnode'
+import { VNode } from 'snabbdom/vnode';
 import klass from 'snabbdom/modules/class';
 import attributes from 'snabbdom/modules/attributes';
 import { menuHover } from 'common/menuHover';
