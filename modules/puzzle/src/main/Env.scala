@@ -39,7 +39,7 @@ final class Env(
   private val config = appConfig.get[PuzzleConfig]("puzzle")(AutoConfig.loader)
 
   private lazy val db    = mongo.asyncDb("puzzle", config.mongoUri)
-  private def puzzleColl = db(config.puzzleColl)
+  def puzzleColl = db(config.puzzleColl)
   private def roundColl  = db(config.roundColl)
   private def voteColl   = db(config.voteColl)
   private def headColl   = db(config.headColl)

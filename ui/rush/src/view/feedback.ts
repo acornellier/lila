@@ -4,11 +4,12 @@ import { spinner } from '../util';
 import { Controller, MaybeVNode } from '../interfaces';
 
 function initial(ctrl: Controller): VNode {
-  const puzzleColor = ctrl.getData().puzzle.color;
+  const puzzleColor = ctrl.curPuzzle().color;
   return h('div.rush__feedback.play', [
     h('div.player', [
       h('div.no-square', h('piece.king.' + puzzleColor)),
       h('div.instruction', [
+        h('strong', `Rating: ${ctrl.curPuzzle().rating}`),
         h('strong', `Find the best move for ${puzzleColor}`)
       ])
     ]),
@@ -23,6 +24,30 @@ function fail(): VNode {
         h('strong', 'Puzzle failed')
       ])
     ])
+  ]);
+}
+
+function good(): VNode {
+  return h('div.rush__feedback.good', [
+    h('div.player', [
+      h('div.icon', '✓'),
+      h('div.instruction', [
+        h('strong', 'Best move'),
+        h('em', 'Keep going')
+      ])
+    ]),
+  ]);
+}
+
+function retry(): VNode {
+  return h('div.rush__feedback.retry', [
+    h('div.player', [
+      h('div.icon', '!'),
+      h('div.instruction', [
+        h('strong', 'Good move'),
+        h('em', 'But you can do better')
+      ])
+    ]),
   ]);
 }
 
@@ -43,7 +68,9 @@ function loading(): VNode {
 
 export default function(ctrl: Controller): MaybeVNode {
   if (ctrl.vm.loading) return loading();
+  if (ctrl.vm.lastFeedback === 'good') return good();
   if (ctrl.vm.lastFeedback === 'win') return win();
+  if (ctrl.vm.lastFeedback === 'retry') return retry();
   if (ctrl.vm.lastFeedback === 'fail') return fail();
   return initial(ctrl);
 }

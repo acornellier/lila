@@ -17,18 +17,13 @@
     grid-area: tools;
   }
 
-  &__history {
-    grid-area: history;
-  }
-
-  grid-template-areas: 'board' 'tools' 'history';
+  grid-template-areas: 'board' 'tools';
   grid-row-gap: $block-gap;
 
   @include breakpoint($mq-col2) {
     grid-template-columns: $col2-uniboard-width $col2-uniboard-table;
     grid-template-rows: fit-content(0);
     grid-template-areas:
-    'board   tools'
-    'history history';
+    'board   tools';
   }
 }

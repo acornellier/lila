@@ -1,15 +1,14 @@
 package views.rush
 
-import play.api.libs.json.{ JsObject, Json }
+import controllers.routes
 import lila.api.Context
 import lila.app.templating.Environment._
 import lila.app.ui.ScalatagsTemplate._
 import lila.common.String.html.safeJsonValue
-
-import controllers.routes
+import play.api.libs.json.{ JsObject, Json }
 
 object home {
-  def apply(puzzle: lila.puzzle.Puzzle, data: JsObject, pref: JsObject)(implicit ctx: Context) =
+  def apply(data: JsObject, pref: JsObject)(implicit ctx: Context) =
     views.html.base.layout(
       title = "Rush",
       moreCss = cssTag("rush"),
@@ -21,7 +20,8 @@ lichess = lichess || {};
 lichess.rush = ${safeJsonValue(
           Json.obj(
             "data" -> data,
-            "pref" -> pref
+            "pref" -> pref,
+            "i18n" -> bits.jsI18n()
           )
         )}""")
       ),
@@ -37,13 +37,8 @@ lichess.rush = ${safeJsonValue(
       zoomable = true
     ) {
       main(cls := "rush")(
-        st.aside(cls := "rush__side")(
-          div(cls := "rush__side__metas")(spinner)
-        ),
         div(cls := "rush__board main-board")(chessgroundBoard),
-        div(cls := "rush__tools"),
-        div(cls := "rush__controls"),
-        div(cls := "rush__history")
+        div(cls := "rush__tools")
       )
     }
 }

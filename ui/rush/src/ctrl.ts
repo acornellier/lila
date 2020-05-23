@@ -3,7 +3,6 @@ import keyboard from './keyboard';
 import moveTestBuild from './moveTest';
 import makePromotion from './promotion';
 import { defined, prop } from 'common';
-import * as xhr from './xhr';
 import * as speech from './speech';
 import { sound } from './sound';
 import { makeSquare, makeUci, parseSquare } from 'chessops/util';
@@ -14,12 +13,14 @@ import { chessgroundDests, scalachessId } from 'chessops/compat';
 import { Config as CgConfig } from 'chessground/config';
 import { Api as CgApi } from 'chessground/api';
 import * as cg from 'chessground/types';
-import { Controller, MoveTest, PuzzleData, PuzzleOpts, PuzzleRound, Redraw, Vm } from './interfaces';
+import { Controller, MoveTest, Puzzle, PuzzleData, PuzzleOpts, Redraw, RushData, Vm } from './interfaces';
 
 export default function(opts: PuzzleOpts, redraw: Redraw): Controller {
-
   let vm: Vm = {} as Vm;
-  let data: PuzzleData, tree: TreeWrapper, moveTest;
+  let data: RushData;
+  let tree: TreeWrapper;
+  let moveTest;
+
   const ground = prop<CgApi | undefined>(undefined);
 
   function setPath(path: Tree.Path): void {
@@ -34,17 +35,20 @@ export default function(opts: PuzzleOpts, redraw: Redraw): Controller {
     return g && f(g);
   }
 
-  function initiate(fromData: PuzzleData): void {
+  function initRush(fromData: RushData): void {
     data = fromData;
-    tree = treeBuild(treeOps.reconstruct(data.game.treeParts));
+    vm.puzzleIndex = 0;
+    initPuzzle();
+  }
+
+  function initPuzzle(): void {
+    tree = treeBuild(treeOps.reconstruct(curPuzzleData().game.treeParts));
     let initialPath = treePath.fromNodeList(treeOps.mainlineNodeList(tree.root));
     // play | try | view
     vm.loading = false;
-    vm.round = undefined;
     vm.justPlayed = undefined;
     vm.lastFeedback = 'init';
     vm.initialPath = initialPath;
-    vm.initialNode = tree.nodeAtPath(initialPath);
 
     setPath(treePath.init(initialPath));
     setTimeout(function() {
@@ -52,7 +56,7 @@ export default function(opts: PuzzleOpts, redraw: Redraw): Controller {
       redraw();
     }, 500);
 
-    moveTest = moveTestBuild(vm, data.puzzle);
+    moveTest = moveTestBuild(vm, curPuzzle());
 
     withGround(g => {
       g.setAutoShapes([]);
@@ -72,7 +76,7 @@ export default function(opts: PuzzleOpts, redraw: Redraw): Controller {
     const dests = chessgroundDests(position());
     const config = {
       fen: node.fen,
-      orientation: data.puzzle.color,
+      orientation: curPuzzle().color,
       turnColor: color,
       movable: {
         color: (Object.keys(dests).length > 0) ? color : undefined,
@@ -86,6 +90,14 @@ export default function(opts: PuzzleOpts, redraw: Redraw): Controller {
     };
     vm.cgConfig = config;
     return config;
+  }
+
+  function curPuzzleData(): PuzzleData {
+    return data.puzzles[vm.puzzleIndex];
+  }
+
+  function curPuzzle(): Puzzle {
+    return curPuzzleData().puzzle;
   }
 
   function showGround(g: CgApi): void {
@@ -147,7 +159,15 @@ export default function(opts: PuzzleOpts, redraw: Redraw): Controller {
     });
   };
 
-  function applyProgress(progress: undefined | 'fail' | 'win' | MoveTest): void {
+  function revertUserMove(): void {
+    setTimeout(function() {
+      withGround(g => g.cancelPremove());
+      userJump(treePath.init(vm.path));
+      redraw();
+    }, 100);
+  }
+
+  function applyProgress(progress: undefined | 'fail' | 'win' | 'retry' | MoveTest): void {
     if (!progress)
       return;
 
@@ -157,6 +177,9 @@ export default function(opts: PuzzleOpts, redraw: Redraw): Controller {
     } else if (progress === 'win') {
       sendResult(true);
       vm.lastFeedback = 'win';
+    } else if (progress === 'retry') {
+      vm.lastFeedback = 'retry';
+      revertUserMove();
     } else {
       vm.lastFeedback = 'good';
       sendMove(progress.orig, progress.dest, progress.promotion);
@@ -164,24 +187,14 @@ export default function(opts: PuzzleOpts, redraw: Redraw): Controller {
   }
 
   function sendResult(win: boolean): void {
-    xhr.round(data.puzzle.id, win).then((res: PuzzleRound) => {
-      data.user = res.user;
-      vm.round = res.round;
-      redraw();
-      if (win) speech.success();
-    });
-    setTimeout(() => nextPuzzle(), 100)
+    if (win) speech.success();
+    setTimeout(() => nextPuzzle(), 500);
   }
 
   function nextPuzzle(): void {
-    vm.loading = true;
+    vm.puzzleIndex += 1;
+    initPuzzle();
     redraw();
-    xhr.nextPuzzle().done((d: PuzzleData) => {
-      vm.round = null;
-      vm.loading = false;
-      initiate(d);
-      redraw();
-    });
   };
 
   function jump(path: Tree.Path): void {
@@ -201,7 +214,6 @@ export default function(opts: PuzzleOpts, redraw: Redraw): Controller {
     }
     promotion.cancel();
     vm.justPlayed = undefined;
-    vm.autoScrollRequested = true;
     window.lichess.pubsub.emit('ply', vm.node.ply);
   }
 
@@ -211,13 +223,7 @@ export default function(opts: PuzzleOpts, redraw: Redraw): Controller {
     speech.node(vm.node, true);
   }
 
-  function recentHash(): string {
-    return 'ph' + data.puzzle.id + (data.user ? data.user.recent.reduce(function(h, r) {
-      return h + r[0];
-    }, '') : '');
-  }
-
-  initiate(opts.data);
+  initRush(opts.data);
 
   const promotion = makePromotion(vm, ground, redraw);
 
@@ -240,8 +246,9 @@ export default function(opts: PuzzleOpts, redraw: Redraw): Controller {
 
   return {
     vm,
+    curPuzzle,
     getData() {
-      return data;
+      return curPuzzleData();
     },
     getTree() {
       return tree;
@@ -250,7 +257,6 @@ export default function(opts: PuzzleOpts, redraw: Redraw): Controller {
     makeCgOpts,
     userJump,
     nextPuzzle,
-    recentHash,
     pref: opts.pref,
     trans: window.lichess.trans(opts.i18n),
     userMove,

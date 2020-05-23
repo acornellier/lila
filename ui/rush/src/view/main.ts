@@ -3,7 +3,6 @@ import { VNode } from 'snabbdom/vnode';
 import chessground from './chessground';
 import * as control from '../control';
 import feedbackView from './feedback';
-import historyView from './history';
 import * as gridHacks from './gridHacks';
 import { bind } from '../util';
 import { Controller } from '../interfaces';
@@ -32,7 +31,6 @@ export default function(ctrl: Controller): VNode {
       chessground(ctrl),
       ctrl.promotion.view()
     ]),
-    h('div.rush__tools', [feedbackView(ctrl)]),
-    historyView(ctrl)
+    h('div.rush__tools', [feedbackView(ctrl)])
   ]);
 }

@@ -87,8 +87,8 @@ lazy val puzzle = module("puzzle",
 )
 
 lazy val rush = module("rush",
-  Seq(common, db),
-  Seq()
+  Seq(common, db, puzzle),
+  reactivemongo.bundle
 )
 
 lazy val quote = module("quote",

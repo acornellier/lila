@@ -21,12 +21,12 @@ export interface Controller extends KeyboardController {
   getOrientation(): Color;
   getNode(): Tree.Node;
   trans: Trans;
+  curPuzzle(): Puzzle,
   getData(): PuzzleData;
   getTree(): TreeWrapper;
   ground: Prop<CgApi | undefined>;
   makeCgOpts(): CgConfig;
   nextPuzzle(): void;
-  recentHash(): string;
   pref: PuzzlePrefs;
   userMove(orig: Key, dest: Key): void;
   promotion: any;
@@ -36,26 +36,21 @@ export interface Controller extends KeyboardController {
 }
 
 export interface Vm {
+  puzzleIndex: number
   path: Tree.Path;
   nodeList: Tree.Node[];
   node: Tree.Node;
   mainline: Tree.Node[];
   loading: boolean;
-  round: any;
   justPlayed?: Key;
-  resultSent: boolean;
-  lastFeedback: 'init' | 'fail' | 'win' | 'good';
+  lastFeedback: 'init' | 'fail' | 'win' | 'retry' | 'good';
   initialPath: Tree.Path;
-  initialNode: Tree.Node;
-  autoScrollRequested: boolean;
-  autoScrollNow: boolean;
   cgConfig: CgConfig;
-  showAutoShapes(): boolean;
 }
 
 export interface PuzzleOpts {
   pref: PuzzlePrefs;
-  data: PuzzleData;
+  data: RushData;
   i18n: { [key: string]: string | undefined };
   element: HTMLElement;
 }
@@ -79,12 +74,10 @@ export interface PuzzleData {
   game: {
     treeParts: Tree.Node[];
   };
-  user: PuzzleUser | undefined;
 }
 
-export interface PuzzleUser {
-  rating: number;
-  recent: Array<[number, number, number]>;
+export interface RushData {
+  puzzles: PuzzleData[];
 }
 
 export interface Puzzle {
@@ -93,14 +86,7 @@ export interface Puzzle {
   color: Color;
   lines: Lines;
   branch: any;
-}
-
-export interface PuzzleRound {
-  user: PuzzleUser;
-  round?: {
-    ratingDiff: number;
-    win: boolean;
-  };
+  rating: number,
 }
 
 export interface Promotion {
