@@ -43,7 +43,6 @@ export default function(opts: PuzzleOpts, redraw: Redraw): Controller {
     vm.loading = false;
     vm.round = undefined;
     vm.justPlayed = undefined;
-    vm.resultSent = false;
     vm.lastFeedback = 'init';
     vm.initialPath = initialPath;
     vm.initialNode = tree.nodeAtPath(initialPath);
@@ -168,14 +167,13 @@ export default function(opts: PuzzleOpts, redraw: Redraw): Controller {
   }
 
   function sendResult(win: boolean): void {
-    if (vm.resultSent) return;
-    vm.resultSent = true;
     xhr.round(data.puzzle.id, win).then((res: PuzzleRound) => {
       data.user = res.user;
       vm.round = res.round;
       redraw();
       if (win) speech.success();
     });
+    setTimeout(() => nextPuzzle(), 100)
   }
 
   function nextPuzzle(): void {

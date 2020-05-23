@@ -3,6 +3,18 @@ import { VNode } from 'snabbdom/vnode';
 import { spinner } from '../util';
 import { Controller, MaybeVNode } from '../interfaces';
 
+function initial(ctrl: Controller): VNode {
+  const puzzleColor = ctrl.getData().puzzle.color;
+  return h('div.rush__feedback.play', [
+    h('div.player', [
+      h('div.no-square', h('piece.king.' + puzzleColor)),
+      h('div.instruction', [
+        h('strong', `Find the best move for ${puzzleColor}`)
+      ])
+    ]),
+  ]);
+}
+
 function fail(): VNode {
   return h('div.rush__feedback.fail', [
     h('div.player', [
@@ -33,5 +45,5 @@ export default function(ctrl: Controller): MaybeVNode {
   if (ctrl.vm.loading) return loading();
   if (ctrl.vm.lastFeedback === 'win') return win();
   if (ctrl.vm.lastFeedback === 'fail') return fail();
-  return;
+  return initial(ctrl);
 }
