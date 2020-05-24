@@ -37,6 +37,7 @@ export interface Controller extends KeyboardController {
 
 export interface Vm {
   puzzleIndex: number
+  progress: PuzzleProgress[]
   path: Tree.Path;
   nodeList: Tree.Node[];
   node: Tree.Node;
@@ -46,6 +47,11 @@ export interface Vm {
   lastFeedback: 'init' | 'fail' | 'win' | 'retry' | 'good';
   initialPath: Tree.Path;
   cgConfig: CgConfig;
+}
+
+export interface PuzzleProgress {
+  puzzle: Puzzle
+  win: boolean
 }
 
 export interface PuzzleOpts {

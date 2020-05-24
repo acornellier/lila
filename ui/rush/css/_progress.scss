@@ -1,13 +1,14 @@
-.rush__history {
-  @extend %box-radius-force;
-  height: $puzzle-history-height;
-  display: flex;
-  justify-content: flex-end;
-  background: $c-shade;
+.rush__progress {
+  @extend %flex-wrap;
+  background: $c-bg-high;
+
+  padding: 10px;
 
   > * {
+    @extend %box-radius;
     @extend %flex-center;
     justify-content: center;
+    margin-right: 5px;
     color: #fff;
     flex: 0 0 12.5%;
     @include breakpoint($mq-small $mq-short) {
@@ -20,28 +21,22 @@
 
   a {
     @include transition(background);
-
     &:hover {
       color: #fff;
       opacity: 1;
     }
-
     &.win {
       background: mix($c-good, $c-shade, 60%);
-
       &:hover {
         background: $c-good;
       }
     }
-
     &.loss {
       background: mix($c-bad, $c-shade, 57%);
-
       &:hover {
         background: $c-bad;
       }
     }
-
     &.current {
       background: $c-brag;
     }

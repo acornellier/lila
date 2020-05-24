@@ -38,6 +38,7 @@ export default function(opts: PuzzleOpts, redraw: Redraw): Controller {
   function initRush(fromData: RushData): void {
     data = fromData;
     vm.puzzleIndex = 0;
+    vm.progress = []
     initPuzzle();
   }
 
@@ -188,6 +189,7 @@ export default function(opts: PuzzleOpts, redraw: Redraw): Controller {
 
   function sendResult(win: boolean): void {
     if (win) speech.success();
+    vm.progress.push({ puzzle: curPuzzle(), win });
     setTimeout(() => nextPuzzle(), 500);
   }
 
